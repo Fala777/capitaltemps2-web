@@ -1,0 +1,1 @@
+Die Website zeigt Daten zum aktuellen Wetter der Haiptsädte dieser Welt an. Es werden Informationen wie die Temperatur, die Windgeschwindigkeit und die Luftfeuchtigkeit angezeigt. Die Daten sind entweder fpr einzelne Städte erhältlich oder es können mit Filtern z.B die 10 grössten Städte angezeigt werden. 
