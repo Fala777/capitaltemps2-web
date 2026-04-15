@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wetter - Capital Weather</title>
+    <title>Wetter</title>
     <link rel="stylesheet" href="../styles.css">
     <script src="../script.js" defer></script>
+    <script src="../login.js" defer></script>
+    <script src="../weather.js" defer></script>
 </head>
 <body>
     <header>
         <div class="header-logo">
-            <div class="logo-placeholder">Logo</div>
+            <img src="../resources/images/logo.jpg" alt="Capital Weather Logo" />
         </div>
         <span class="mobile-page-title">Wetter</span>
         <nav>
             <a href="../index.html">Startseite</a>
             <a href="capitalWeather.html">Wetter</a>
-            <a href="aboutUS.html">About Us</a>
-            <a href="login.html">Anmeldung</a>
+            <a href="aboutUS.html">Über mich</a>
+            <a href="login.html" id="nav-login-link">Anmeldung</a>
         </nav>
+        <div class="user-menu" id="user-menu" style="display: none;">
+            <button class="user-menu-button" id="user-menu-button"></button>
+            <div class="user-dropdown" id="user-dropdown">
+                <button id="disconnect-button" class="disconnect-button">Disconnect</button>
+            </div>
+        </div>
         <div class="burger-menu">
             <span></span>
             <span></span>
@@ -27,117 +35,120 @@
     </header>
 
     <main>
-        <h1>Weather</h1>
+        <h1>Wetter</h1>
         
         <!-- Controls Section: Filters + Search -->
         <section id="controls-section">
             <div class="controls-wrapper">
-                <button class="filter-button" data-filter="temp">Filter 1</button>
-                <button class="filter-button" data-filter="condition">Filter 2</button>
-                <button class="filter-button" data-filter="region">Filter 3</button>
-                <input type="text" id="city-input" placeholder="Suchen..." class="search-input">
-                <button class="search-button" id="search-button">Suchen</button>
+                <div class="continent-dropdown-wrapper">
+                    <button class="continent-dropdown-toggle" id="continent-dropdown-btn">Kontinente</button>
+                    <div class="continent-dropdown-menu" id="continent-dropdown-menu">
+                        <label class="continent-toggle">
+                            <span>Alle</span>
+                            <input type="checkbox" name="continent" value="all" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Afrika</span>
+                            <input type="checkbox" name="continent" value="Africa" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Asien</span>
+                            <input type="checkbox" name="continent" value="Asia" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Europa</span>
+                            <input type="checkbox" name="continent" value="Europe" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Nordamerika</span>
+                            <input type="checkbox" name="continent" value="North America" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Südamerika</span>
+                            <input type="checkbox" name="continent" value="South America" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="continent-toggle">
+                            <span>Ozeanien</span>
+                            <input type="checkbox" name="continent" value="Oceania" class="continent-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="population-dropdown-wrapper">
+                    <button class="population-dropdown-toggle" id="population-dropdown-btn">Bevölkerung</button>
+                    <div class="population-dropdown-menu" id="population-dropdown-menu">
+                        <label class="population-toggle">
+                            <span>&lt;10'000</span>
+                            <input type="checkbox" name="population" value="0-10000" class="population-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="population-toggle">
+                            <span>10'000-100'000</span>
+                            <input type="checkbox" name="population" value="10000-100000" class="population-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="population-toggle">
+                            <span>100'000-1 Mio</span>
+                            <input type="checkbox" name="population" value="100000-1000000" class="population-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="population-toggle">
+                            <span>1 Mio-10 Mio</span>
+                            <input type="checkbox" name="population" value="1000000-10000000" class="population-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                        <label class="population-toggle">
+                            <span>&gt;10 Mio</span>
+                            <input type="checkbox" name="population" value="10000000" class="population-checkbox">
+                            <span class="toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="sort-dropdown-wrapper">
+                    <button class="sort-dropdown-toggle" id="sort-dropdown-btn">Sortieren nach</button>
+                    <div class="sort-dropdown-menu" id="sort-dropdown-menu">
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="az" class="sort-radio">
+                            <span>A-Z (Standard)</span>
+                        </label>
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="za" class="sort-radio">
+                            <span>Z-A</span>
+                        </label>
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="pop-asc" class="sort-radio">
+                            <span>Bevölkerung (klein-groß)</span>
+                        </label>
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="pop-desc" class="sort-radio">
+                            <span>Bevölkerung (groß-klein)</span>
+                        </label>
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="temp-high" class="sort-radio">
+                            <span>Temperatur (hoch-niedrig)</span>
+                        </label>
+                        <label class="sort-option">
+                            <input type="radio" name="sort" value="temp-low" class="sort-radio">
+                            <span>Temperatur (niedrig-hoch)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="search-box-wrapper">
+                    <input type="text" id="city-input" placeholder="Stadt suchen..." class="search-input">
+                    <button class="search-button" id="search-button">Suchen</button>
+                </div>
             </div>
         </section>
 
         <!-- Weather Grid Section -->
         <section id="weather-grid-section">
             <div class="weather-grid">
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="weather-card">
-                    <div class="card-content">
-                        <div class="card-text">
-                            <h3>Bern</h3>
-                            <p>Switzerland</p>
-                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
-                        </div>
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
-                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
     </main>

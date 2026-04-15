@@ -6,29 +6,32 @@
     <title>Capital Weather - Wetterportal</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
+    <script src="login.js" defer></script>
 </head>
-<body>
+<body class="index-page">
     <div class="moving-image-bg">
-        <div class="moving-image-placeholder">
-            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                <rect width="400" height="400" fill="#F5E6E0" opacity="0.3"/>
-                <circle cx="200" cy="150" r="80" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
-                <path d="M 100 250 Q 200 200 300 250" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
-            </svg>
-        </div>
+        <video class="background-video" autoplay muted loop>
+            <source src="resources/videos/background.mp4" type="video/mp4">
+        </video>
     </div>
 
     <header>
         <div class="header-logo">
-            <div class="logo-placeholder">Logo</div>
+            <img src="resources/images/logo.jpg" alt="Capital Weather Logo" />
         </div>
         <span class="mobile-page-title">Startseite</span>
         <nav>
             <a href="index.html">Startseite</a>
             <a href="pages/capitalWeather.html">Wetter</a>
-            <a href="pages/aboutUS.html">About Us</a>
-            <a href="pages/login.html">Anmeldung</a>
+            <a href="pages/aboutUS.html">Über mich</a>
+            <a href="pages/login.html" id="nav-login-link">Anmeldung</a>
         </nav>
+        <div class="user-menu" id="user-menu" style="display: none;">
+            <button class="user-menu-button" id="user-menu-button"></button>
+            <div class="user-dropdown" id="user-dropdown">
+                <button id="disconnect-button" class="disconnect-button">Disconnect</button>
+            </div>
+        </div>
         <div class="burger-menu">
             <span></span>
             <span></span>

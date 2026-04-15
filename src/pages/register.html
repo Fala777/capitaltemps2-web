@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrierung - Capital Weather</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../script.js" defer></script>
+    <script src="../login.js" defer></script>
+</head>
+<body>
+    <div class="moving-image-bg"></div>
+
+    <header>
+        <div class="header-logo">
+            <img src="../resources/images/logo.jpg" alt="Capital Weather Logo" />
+        </div>
+        <span class="mobile-page-title">Registrierung</span>
+        <nav>
+            <a href="../index.html">Startseite</a>
+            <a href="capitalWeather.html">Wetter</a>
+            <a href="aboutUS.html">Über mich</a>
+            <a href="login.html" id="nav-login-link">Anmeldung</a>
+        </nav>
+        <div class="user-menu" id="user-menu" style="display: none;">
+            <button class="user-menu-button" id="user-menu-button"></button>
+            <div class="user-dropdown" id="user-dropdown">
+                <button id="disconnect-button" class="disconnect-button">Disconnect</button>
+            </div>
+        </div>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main class="centered-page">
+        <section id="register-section" class="centered-form">
+            <h1>Registrierung</h1>
+            
+            <form>
+                <div class="form-group">
+                    <label for="register-email">E-Mail</label>
+                    <input type="email" id="register-email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">Passwort</label>
+                    <input type="password" id="register-password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-confirm-password">Passwort bestätigen</label>
+                    <input type="password" id="register-confirm-password" name="confirm-password" required>
+                </div>
+
+                <button type="submit">Registrieren</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Kontakt: info@capitalweather.de | Tel: +49 123 456789</p>
+        <p>Adresse: Hauptstraße 1, 10115 Berlin</p>
+        <p>&copy; 2026 Capital Weather. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>
