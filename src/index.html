@@ -1,26 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Willkomen im Wetterportal</title>
+    <title>Capital Weather - Wetterportal</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
-
 </head>
 <body>
+    <div class="moving-image-bg">
+        <div class="moving-image-placeholder">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="400" fill="#F5E6E0" opacity="0.3"/>
+                <circle cx="200" cy="150" r="80" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
+                <path d="M 100 250 Q 200 200 300 250" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
+            </svg>
+        </div>
+    </div>
+
     <header>
-        <h1>Willkommen im Wetterportal</h1>
+        <div class="header-logo">
+            <div class="logo-placeholder">Logo</div>
+        </div>
+        <nav>
+            <a href="index.html">Startseite</a>
+            <a href="pages/capitalWeather.html">Wetter</a>
+            <a href="pages/aboutUS.html">About Us</a>
+            <a href="pages/login.html">Anmeldung</a>
+        </nav>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </header>
 
-    <main>
-        <section id="search-section">
-            <input type="text" id="city-input" placeholder="Geben Sie eine Stadt ein...">
-            <button id="search-button">Suchen</button>
-        </section>
-
-        <section id="weather-display">
-            
+    <main class="centered-page">
+        <section id="hero-section" class="hero-content">
+            <h1>Capital Weather</h1>
+            <p class="fact-subtitle">Spaßfakt zum Wetter wird hier angezeigt</p>
         </section>
     </main>
+
+    <footer>
+        <p>Kontakt: info@capitalweather.de | Tel: +49 123 456789</p>
+        <p>Adresse: Hauptstraße 1, 10115 Berlin</p>
+        <p>&copy; 2026 Capital Weather. Alle Rechte vorbehalten.</p>
+    </footer>
 </body>
+</html>

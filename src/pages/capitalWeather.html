@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wetter - Capital Weather</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            <div class="logo-placeholder">Logo</div>
+        </div>
+        <nav>
+            <a href="../index.html">Startseite</a>
+            <a href="capitalWeather.html">Wetter</a>
+            <a href="aboutUS.html">About Us</a>
+            <a href="login.html">Anmeldung</a>
+        </nav>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main>
+        <h1>Weather</h1>
+        
+        <!-- Controls Section: Filters + Search -->
+        <section id="controls-section">
+            <div class="controls-wrapper">
+                <button class="filter-button" data-filter="temp">Filter 1</button>
+                <button class="filter-button" data-filter="condition">Filter 2</button>
+                <button class="filter-button" data-filter="region">Filter 3</button>
+                <input type="text" id="city-input" placeholder="Suchen..." class="search-input">
+                <button class="search-button" id="search-button">Suchen</button>
+            </div>
+        </section>
+
+        <!-- Weather Grid Section -->
+        <section id="weather-grid-section">
+            <div class="weather-grid">
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weather-card">
+                    <div class="card-content">
+                        <div class="card-text">
+                            <h3>Bern</h3>
+                            <p>Switzerland</p>
+                            <p class="weather-data">Temperature and other weather data blah blah blah</p>
+                        </div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="80" height="60" fill="none" stroke="#999" stroke-width="1"/>
+                                <text x="40" y="30" text-anchor="middle" dy="0.3em" fill="#999" font-size="10">flag svg</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Kontakt: info@capitalweather.de | Tel: +49 123 456789</p>
+        <p>Adresse: Hauptstraße 1, 10115 Berlin</p>
+        <p>&copy; 2026 Capital Weather. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>

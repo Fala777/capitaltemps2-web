@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwort vergessen - Capital Weather</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../script.js" defer></script>
+</head>
+<body>
+    <div class="moving-image-bg">
+        <div class="moving-image-placeholder">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="400" fill="#F5E6E0" opacity="0.3"/>
+                <circle cx="200" cy="150" r="80" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
+                <path d="M 100 250 Q 200 200 300 250" fill="none" stroke="#999999" stroke-width="2" opacity="0.2"/>
+            </svg>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-logo">
+            <div class="logo-placeholder">Logo</div>
+        </div>
+        <nav>
+            <a href="../index.html">Startseite</a>
+            <a href="capitalWeather.html">Wetter</a>
+            <a href="aboutUS.html">About Us</a>
+            <a href="login.html">Anmeldung</a>
+        </nav>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main class="centered-page">
+        <section id="reset-section" class="centered-form">
+            <h1>Passwort vergessen</h1>
+            <p>Geben Sie Ihre E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen.</p>
+            
+            <form>
+                <div class="form-group">
+                    <label for="reset-email">E-Mail-Adresse</label>
+                    <input type="email" id="reset-email" name="reset-email" required>
+                </div>
+
+                <button type="submit">E-Mail senden</button>
+            </form>
+
+            <p class="mt-3">
+                <a href="login.html">Zurück zur Anmeldung</a>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Kontakt: info@capitalweather.de | Tel: +49 123 456789</p>
+        <p>Adresse: Hauptstraße 1, 10115 Berlin</p>
+        <p>&copy; 2026 Capital Weather. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>
