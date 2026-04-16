@@ -1,0 +1,82 @@
+name: Minify and Deploy
+
+on:
+  push:
+    branches:
+      - main  # Ensure this matches your default branch name
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install Minifiers
+        run: npm install -g terser clean-css-cli
+
+      - name: Prepare Distribution
+        run: |
+          # Fresh start for the dist folder
+          rm -rf dist
+          mkdir -p dist
+          
+          # Move index.html and other HTML files into dist
+          # Checks both root and src/ folder
+          if [ -f src/index.html ]; then
+            cp src/index.html dist/
+          elif [ -f index.html ]; then
+            cp index.html dist/
+          fi
+          
+          # Copy any other HTML files that might exist
+          cp src/*.html dist/ 2>/dev/null || cp *.html dist/ 2>/dev/null || true
+
+      - name: Minify JS
+        run: |
+          shopt -s nullglob
+          for f in src/*.js; do
+            echo "Minifying $f..."
+            terser "$f" --compress --mangle -o "dist/$(basename "$f")"
+          done
+
+      - name: Minify CSS
+        run: |
+          shopt -s nullglob
+          for f in src/*.css; do
+            echo "Minifying $f..."
+            cleancss -o "dist/$(basename "$f")" "$f"
+          done
+
+      - name: Debug Output
+        run: |
+          echo "Listing files in dist to verify content:"
+          ls -R dist
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
