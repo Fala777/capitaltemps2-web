@@ -26,8 +26,8 @@ Die Website verwendet ein modernes, dunkles Farbschema basierend auf klassischen
 
 #### Hauptfarbpalette (8 Farben)
 
-| Farbe | Hex-Code | Beschreibung | Verwendung |
-|-------|----------|-------------|-----------|
+| Farbe | Hex-Code | Beschreibung |
+|-------|----------|-------------|
 | **Deep Black** | `#1A1A1A` | Primärer Hintergrund, Header |
 | **Pure White** | `#FFFFFF` | Haupt-Text, Hervorhebungen |
 | **Dark Gray** | `#2D2D2D` | Sekundärer Hintergrund, Dropdowns |
