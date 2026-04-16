@@ -4,282 +4,196 @@
 
 let currentWeatherData = [];
 
+/**
+ * Fetches filtered and sorted data from the Java backend.
+ * Uses the cache unless the user triggers a refresh.
+ */
 async function fetchWeatherData() {
     try {
-        // Build query parameters
         const params = new URLSearchParams();
         
-        // Get selected continents (from checkboxes)
+        // 1. Collect Continents
         const continentCheckboxes = document.querySelectorAll('input.continent-checkbox:checked');
-        const selectedContinents = Array.from(continentCheckboxes)
+        Array.from(continentCheckboxes)
             .filter(cb => cb.value !== 'all')
-            .map(cb => cb.value);
+            .forEach(cb => params.append('continents', cb.value));
         
-        if (selectedContinents.length > 0) {
-            selectedContinents.forEach(continent => {
-                params.append('continents', continent);
-            });
-        }
-        
-        // Get selected population ranges (from checkboxes)
+        // 2. Collect Population Ranges
         const populationCheckboxes = document.querySelectorAll('input.population-checkbox:checked');
-        const selectedPopulations = Array.from(populationCheckboxes).map(cb => cb.value);
+        Array.from(populationCheckboxes).forEach(cb => {
+            params.append('populationRanges', cb.value); 
+        });
         
-        if (selectedPopulations.length > 0) {
-            selectedPopulations.forEach(population => {
-                params.append('population', population);
-            });
-        }
-        
-        // Get Filter 3 value (if exists)
-        const filter3 = document.getElementById('filter-3');
-        if (filter3 && filter3.value) {
-            params.append('filter3', filter3.value);
-        }
-        
-        // Get search input (if exists)
+        // 3. Collect Search Term (Exact Match)
         const searchInput = document.getElementById('city-input');
         if (searchInput && searchInput.value.trim()) {
-            params.append('search', searchInput.value.trim());
+            params.append('searchTerm', searchInput.value.trim());
         }
-        
-        // Build the URL
-        let url = 'http://localhost:8082/api/weather';
-        if (params.toString()) {
-            url += '?' + params.toString();
-        }
-        
-        console.log('Fetching from:', url);
+
+        // 4. Collect Sort Order
+        const sortValue = document.querySelector('input[name="sort"]:checked')?.value || 'az';
+        params.append('sortBy', sortValue);
+
+        const url = `http://localhost:8082/api/weather?${params.toString()}`;
+        console.log('Requesting data from cache:', url);
         
         const response = await fetch(url);
         const data = await response.json();
         
         if (response.ok) {
-            console.log('Weather data received:', data);
             currentWeatherData = data.payload || [];
             updateWeatherGrid(currentWeatherData);
-            
-            // Show success feedback
-            if (data.message) {
-                console.log('Server feedback:', data.message);
-            }
         } else {
-            console.error('API error:', data.message);
-            alert('Fehler beim Abrufen der Wetterdaten: ' + data.message);
+            console.error('Backend error:', data.message);
         }
     } catch (error) {
         console.error('Connection error:', error);
-        alert('Verbindungsfehler: ' + error.message);
     }
 }
 
+
 function updateWeatherGrid(weatherData) {
     const weatherGrid = document.querySelector('.weather-grid');
-    
+    if (!weatherGrid) return;
+
     if (!weatherData || weatherData.length === 0) {
-        weatherGrid.innerHTML = '<p>Keine Wetterdaten gefunden.</p>';
+        weatherGrid.innerHTML = '<p>Keine Resultate gefunden.</p>';
         return;
     }
     
-    // Apply sorting
-    const sortBy = document.querySelector('input[name="sort"]:checked')?.value || 'az';
-    const sortedData = sortWeatherData(weatherData, sortBy);
-    
-    // Clear existing cards
     weatherGrid.innerHTML = '';
     
-    // Create cards from data
-    sortedData.forEach(city => {
+    weatherData.forEach(city => {
         const cardHTML = `
             <div class="weather-card">
                 <div class="card-content">
                     <div class="card-text">
-                        <h3>${city.capital?.name || 'Unknown'}</h3>
-                        <p>Hauptstadt von ${city.capital?.countryName || 'Unknown'}</p>
-                        <p class="weather-data">
-                            Bevölkerung Land: ${city.capital?.population ? city.capital.population.toLocaleString('de-CH') : 'N/A'}
-                        </p>
-                        <p class="weather-data">
-                            Temperatur: ${city.temperature || 'N/A'}°C
-                        </p>
-                        <p class="weather-data">
-                            Luftfeuchtigkeit: ${city.humidity || 'N/A'}%
-                        </p>
-                        <p class="weather-data">
-                            Wind: ${city.windSpeed || 'N/A'} m/s
-                        </p>
+                        <h3>${city.capital?.name || 'Unbekannt'}</h3>
+                        <p>Hauptstadt von ${city.capital?.countryName || 'Unbekannt'}</p>
+                        
+                        <div class="weather-details">
+                            <p class="weather-data">
+                                <strong>Bevölkerung:</strong> ${city.capital?.population?.toLocaleString('de-CH') || 'N/A'}
+                            </p>
+                            <p class="weather-data">
+                                <strong>Temperatur:</strong> ${city.temperature ?? 'N/A'}°C
+                            </p>
+                            <p class="weather-data">
+                                <strong>Luftfeuchtigkeit:</strong> ${city.humidity ?? 'N/A'}%
+                            </p>
+                            <p class="weather-data">
+                                <strong>Windgeschwindigkeit:</strong> ${city.windSpeed ?? 'N/A'} m/s
+                            </p>
+                        </div>
                     </div>
-                    <div class="card-icon"></div>
+                    <div class="card-icon">
+                        ${city.capital?.flagSVG 
+                            ? `<img src="${city.capital.flagSVG}" alt="Flag">` 
+                            : '<img src="resources/images/logo.png" alt="No Flag">'}
+                    </div>
                 </div>
             </div>
         `;
+        weatherGrid.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
+
+/**
+ * Sends a request to the backend to clear the cache 
+ * and fetch fresh data from external APIs.
+ */
+async function triggerDataRefresh() {
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.classList.add('loading');
+        refreshBtn.disabled = true;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8082/api/refresh', { 
+            method: 'POST' 
+        });
         
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = cardHTML;
-        const card = tempDiv.firstElementChild;
-        
-        // Handle flag image or fallback
-        const cardIcon = card.querySelector('.card-icon');
-        
-        if (city.capital?.flagSVG) {
-            const img = document.createElement('img');
-            img.src = city.capital.flagSVG;
-            img.alt = `${city.capital.countryName} flag`;
-            cardIcon.appendChild(img);
+        if (response.ok) {
+            console.log("Backend cache updated.");
+            await fetchWeatherData(); // Reload the UI with new data
         } else {
-            // Fallback if no flag available
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('viewBox', '0 0 80 60');
-            
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('width', '80');
-            rect.setAttribute('height', '60');
-            
-            svg.appendChild(rect);
-            cardIcon.appendChild(svg);
+            alert("Fehler beim Aktualisieren der Daten.");
         }
-        
-        weatherGrid.appendChild(card);
-    });
-}
-
-function sortWeatherData(data, sortBy) {
-    const sorted = [...data];
-    
-    switch(sortBy) {
-        case 'az':
-            sorted.sort((a, b) => (a.capital?.name || '').localeCompare(b.capital?.name || ''));
-            break;
-        case 'za':
-            sorted.sort((a, b) => (b.capital?.name || '').localeCompare(a.capital?.name || ''));
-            break;
-        case 'pop-asc':
-            sorted.sort((a, b) => (a.population || 0) - (b.population || 0));
-            break;
-        case 'pop-desc':
-            sorted.sort((a, b) => (b.population || 0) - (a.population || 0));
-            break;
-        case 'temp-high':
-            sorted.sort((a, b) => (b.temperature || 0) - (a.temperature || 0));
-            break;
-        case 'temp-low':
-            sorted.sort((a, b) => (a.temperature || 0) - (b.temperature || 0));
-            break;
-        default:
-            return sorted;
+    } catch (error) {
+        console.error("Refresh connection error:", error);
+    } finally {
+        if (refreshBtn) {
+            refreshBtn.classList.remove('loading');
+            refreshBtn.disabled = false;
+        }
     }
-    
-    return sorted;
 }
 
-// Initialize on page load
+/* ========================================
+   UI & DROPDOWN LOGIC
+   ======================================== */
+
 document.addEventListener('DOMContentLoaded', function() {
-    const dropdownBtn = document.getElementById('continent-dropdown-btn');
-    const dropdownMenu = document.getElementById('continent-dropdown-menu');
-    const populationDropdownBtn = document.getElementById('population-dropdown-btn');
-    const populationDropdownMenu = document.getElementById('population-dropdown-menu');
-    const sortDropdownBtn = document.getElementById('sort-dropdown-btn');
-    const sortDropdownMenu = document.getElementById('sort-dropdown-menu');
-    const continentCheckboxes = document.querySelectorAll('input.continent-checkbox');
-    const populationCheckboxes = document.querySelectorAll('input.population-checkbox');
-    const sortRadios = document.querySelectorAll('input[name="sort"]');
-    const searchButton = document.getElementById('search-button');
-    
-    // Toggle continent dropdown menu
-    if (dropdownBtn) {
-        dropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Close other dropdowns
-            populationDropdownMenu.classList.remove('active');
-            sortDropdownMenu.classList.remove('active');
-            // Toggle this dropdown
-            dropdownMenu.classList.toggle('active');
-        });
-    }
-    
-    // Toggle population dropdown menu
-    if (populationDropdownBtn) {
-        populationDropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Close other dropdowns
-            dropdownMenu.classList.remove('active');
-            sortDropdownMenu.classList.remove('active');
-            // Toggle this dropdown
-            populationDropdownMenu.classList.toggle('active');
-        });
-    }
-    
-    // Toggle sort dropdown menu
-    if (sortDropdownBtn) {
-        sortDropdownBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Close other dropdowns
-            dropdownMenu.classList.remove('active');
-            populationDropdownMenu.classList.remove('active');
-            // Toggle this dropdown
-            sortDropdownMenu.classList.toggle('active');
-        });
-    }
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.continent-dropdown-wrapper')) {
-            dropdownMenu.classList.remove('active');
-        }
-        if (!e.target.closest('.population-dropdown-wrapper')) {
-            populationDropdownMenu.classList.remove('active');
-        }
-        if (!e.target.closest('.sort-dropdown-wrapper')) {
-            sortDropdownMenu.classList.remove('active');
-        }
-    });
-    
-    // Add event listeners to continent checkboxes
-    continentCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            // Handle "All" checkbox
-            if (this.value === 'all') {
-                const otherCheckboxes = document.querySelectorAll('input.continent-checkbox:not([value="all"])');
-                otherCheckboxes.forEach(cb => {
-                    cb.checked = this.checked;
+    // 1. Dropdown Toggles
+    const dropdowns = {
+        continent: { btn: 'continent-dropdown-btn', menu: 'continent-dropdown-menu' },
+        population: { btn: 'population-dropdown-btn', menu: 'population-dropdown-menu' },
+        sort: { btn: 'sort-dropdown-btn', menu: 'sort-dropdown-menu' }
+    };
+
+    Object.values(dropdowns).forEach(d => {
+        const btn = document.getElementById(d.btn);
+        const menu = document.getElementById(d.menu);
+        
+        if (btn && menu) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Close other menus
+                document.querySelectorAll('.continent-dropdown-menu, .population-dropdown-menu, .sort-dropdown-menu').forEach(m => {
+                    if (m !== menu) m.classList.remove('active');
                 });
-            }
+                menu.classList.toggle('active');
+            });
+        }
+    });
+
+    // 2. Global click to close menus
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.continent-dropdown-menu, .population-dropdown-menu, .sort-dropdown-menu').forEach(m => m.classList.remove('active'));
+    });
+
+    // 3. "All" Checkbox Logic
+    const allContinentCb = document.querySelector('input.continent-checkbox[value="all"]');
+    if (allContinentCb) {
+        allContinentCb.addEventListener('change', function() {
+            const others = document.querySelectorAll('input.continent-checkbox:not([value="all"])');
+            others.forEach(cb => cb.checked = this.checked);
             fetchWeatherData();
         });
-    });
-    
-    // Add event listeners to population checkboxes
-    populationCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            fetchWeatherData();
+    }
+
+    // 4. Change Listeners (Filtering & Sorting)
+    document.querySelectorAll('.continent-checkbox:not([value="all"]), .population-checkbox, input[name="sort"]')
+        .forEach(input => {
+            input.addEventListener('change', fetchWeatherData);
         });
-    });
-    
-    // Add event listeners to sort radios (only re-sort, don't re-fetch)
-    sortRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (currentWeatherData.length > 0) {
-                updateWeatherGrid(currentWeatherData);
-            }
-        });
-    });
-    
-    // Search button and input
-    const searchInput = document.getElementById('city-input');
-    if (searchButton) {
-        searchButton.addEventListener('click', function(e) {
+
+    // 5. Search Button
+    const searchBtn = document.getElementById('search-button');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => {
             e.preventDefault();
             fetchWeatherData();
         });
     }
-    
-    // Allow Enter key in search input
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                fetchWeatherData();
-            }
-        });
+
+    // 6. Refresh Button
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', triggerDataRefresh);
     }
+
+    // 7. Initial load
+    fetchWeatherData();
 });
