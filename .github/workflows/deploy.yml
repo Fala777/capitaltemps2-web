@@ -1,0 +1,63 @@
+name: Minify and Deploy
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch name
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Install minification tools
+      - name: Install Minifiers
+        run: npm install -g terser clean-css-cli
+
+      # Create a 'dist' folder for the final site
+      - name: Prepare Distribution
+        run: |
+          mkdir -p dist
+          cp index.html dist/ || true
+          # Copy other static assets like images if they exist
+          # cp -r assets dist/ 
+
+      - name: Minify JS
+        run: |
+          # Minifies all .js files in src/js/ and puts them in dist/js/
+          mkdir -p dist/js
+          for f in src/js/*.js; do
+            terser "$f" -o "dist/js/$(basename "$f")"
+          done
+
+      - name: Minify CSS
+        run: |
+          # Minifies all .css files in src/css/ and puts them in dist/css/
+          mkdir -p dist/css
+          for f in src/css/*.css; do
+            cleancss -o "dist/css/$(basename "$f")" "$f"
+          done
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
