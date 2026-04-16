@@ -3,16 +3,28 @@ name: Minify and Deploy
 on:
   push:
     branches:
-      - main  # Change this to your default branch name
+      - main
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
+    # Explicitly defining the environment for GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -20,26 +32,31 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
-      # Install minification tools
       - name: Install Minifiers
         run: npm install -g terser clean-css-cli
 
       - name: Prepare Distribution
         run: |
-          # Clean old dist and recreate it
           rm -rf dist
           mkdir -p dist
-          # Copy HTML directly to dist
+          
+          # Priority: Move index.html into dist
+          if [ -f src/index.html ]; then
+            cp src/index.html dist/
+          elif [ -f index.html ]; then
+            cp index.html dist/
+          fi
+          
+          # Copy other HTML files
           cp src/*.html dist/ 2>/dev/null || cp *.html dist/ 2>/dev/null || true
 
       - name: Minify JS
         run: |
           shopt -s nullglob
           for f in src/*.js; do
-            echo "Processing $f..."
-            # This puts minified files directly in dist/
+            echo "Minifying $f..."
             terser "$f" --compress --mangle -o "dist/$(basename "$f")"
           done
 
@@ -47,13 +64,12 @@ jobs:
         run: |
           shopt -s nullglob
           for f in src/*.css; do
-            echo "Processing $f..."
-            # This puts minified files directly in dist/
+            echo "Minifying $f..."
             cleancss -o "dist/$(basename "$f")" "$f"
           done
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
