@@ -3,7 +3,7 @@ name: Minify and Deploy
 on:
   push:
     branches:
-      - main  # Ensure this matches your default branch name
+      - main
 
 permissions:
   contents: read
@@ -16,9 +16,15 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    # This block is what was missing
+    environment:
+      name: github-pages
+      url: ${{ steps: deployment.outputs.page_url }}
+    
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -33,19 +39,17 @@ jobs:
 
       - name: Prepare Distribution
         run: |
-          # Fresh start for the dist folder
           rm -rf dist
           mkdir -p dist
           
-          # Move index.html and other HTML files into dist
-          # Checks both root and src/ folder
+          # Priority: Copy index.html first
           if [ -f src/index.html ]; then
             cp src/index.html dist/
           elif [ -f index.html ]; then
             cp index.html dist/
           fi
           
-          # Copy any other HTML files that might exist
+          # Copy other HTML files
           cp src/*.html dist/ 2>/dev/null || cp *.html dist/ 2>/dev/null || true
 
       - name: Minify JS
@@ -63,11 +67,6 @@ jobs:
             echo "Minifying $f..."
             cleancss -o "dist/$(basename "$f")" "$f"
           done
-
-      - name: Debug Output
-        run: |
-          echo "Listing files in dist to verify content:"
-          ls -R dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
