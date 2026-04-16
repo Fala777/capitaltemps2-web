@@ -922,7 +922,6 @@ li {
 
 .card-icon {
     flex-shrink: 0;
-    width: 120px;
     height: 80px;
     display: flex;
     align-items: center;
@@ -1332,6 +1331,17 @@ footer.footer-bottom {
 
     .search-box-wrapper {
         width: 100%;
+    }
+}
+
+/* Large Screens */
+@media (min-width: 1025px) {
+    .centered-form {
+        max-width: 600px;
+    }
+
+    form {
+        max-width: 600px;
     }
 }
 

@@ -95,10 +95,17 @@ function updateWeatherGrid(weatherData) {
                 <div class="card-content">
                     <div class="card-text">
                         <h3>${city.capital?.name || 'Unknown'}</h3>
-                        <p>${city.capital?.countryName || 'Unknown'}</p>
+                        <p>Hauptstadt von ${city.capital?.countryName || 'Unknown'}</p>
                         <p class="weather-data">
-                            Temperatur: ${city.temperature || 'N/A'}°C | 
-                            Luftfeuchtigkeit: ${city.humidity || 'N/A'}% | 
+                            Bevölkerung Land: ${city.capital?.population ? city.capital.population.toLocaleString('de-CH') : 'N/A'}
+                        </p>
+                        <p class="weather-data">
+                            Temperatur: ${city.temperature || 'N/A'}°C
+                        </p>
+                        <p class="weather-data">
+                            Luftfeuchtigkeit: ${city.humidity || 'N/A'}%
+                        </p>
+                        <p class="weather-data">
                             Wind: ${city.windSpeed || 'N/A'} m/s
                         </p>
                     </div>
