@@ -16,10 +16,10 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    # Explicitly defining the environment for GitHub Pages
+    # This block is what was missing
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps: deployment.outputs.page_url }}
     
     runs-on: ubuntu-latest
     env:
@@ -42,7 +42,7 @@ jobs:
           rm -rf dist
           mkdir -p dist
           
-          # Priority: Move index.html into dist
+          # Priority: Copy index.html first
           if [ -f src/index.html ]; then
             cp src/index.html dist/
           elif [ -f index.html ]; then
