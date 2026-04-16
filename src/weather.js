@@ -89,8 +89,8 @@ function updateWeatherGrid(weatherData) {
 
                     <div class="card-icon">
                         ${
-                            // Check if flagSVG exists AND is longer than a basic empty tag
-                            (city.capital?.flagSVG && city.capital.flagSVG.length > 10) 
+  
+                            (city.capital?.flagSVG && city.capital.flagSVG.length > 10  ) 
                                 ? `<img src="${city.capital.flagSVG}" alt="Flag">` 
                                 : '<img src="resources/images/logo.png" alt="No Flag">'
                         }
